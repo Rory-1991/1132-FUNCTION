@@ -125,13 +125,57 @@ function del($table ,$id){
     }
 
      return  $pdo->exec($sql);
-    
-    
-
-
 
 }
 
+/**
+ * 更新指定條件的資料
+ * @param string $table 資料表名稱
+ * @param array $array 更新的欄位及內容
+ * @param array || number $id 條件(數字或陣列)
+ * @return boolean
+ */
+
+ function update($table,$array,$id){
+    $sql="update $table set ";
+    $pdo=$pdo=pdo('crud');
+    $tmp=[];
+    foreach($array as $key => $value){
+        $tmp[]="`$key`='$value'";
+    }
+    $sql=$sql . join(",",$tmp);
+
+    if(is_array($id)){
+        $tmp=[];
+        foreach($id as $key => $value){
+            $tmp[]="`$key`='$value'";
+        }
+        $sql=$sql . " where ".join(" && ",$tmp);
+
+    }else{
+        $sql=$sql . " where `id`='$id'";
+    }
+
+    return $pdo->exec($sql);
+
+
+}
+/**
+ * 新增資料
+ * @param string $table 資料表名稱
+ * @param string $cols  新增的欄位字串
+ * @param string $values 新增的值字串
+ * @return boolean
+ */
+
+ function insert($table,$array){
+    $pdo=pdo('crud');
+    $sql="insert into $table ";
+    $keys=array_keys($array);
+    
+    $sql=$sql . "(`".join("`,`",$keys)."`) values ('".join("','",$array)."')";
+    return $pdo->exec($sql);
+}
 
 /**
  * 列出陣列內容
@@ -142,4 +186,14 @@ function dd($array){
     echo "</pre>";
 }
 
+//insert("member",["acc"=>21,
+//                 "pw"=>21,
+//                 "email"=>"21@gmail.com",
+//                 "tel"=>"0933254879"]);
+//
+//update('member',['email'=>'19@gmail.com'],['acc'=>'19','pw'=>'19']);
+
+
 ?>
+<!-- 資料庫不能存陣列只能存字串 -->
+ <!-- SQL是字串 -->
