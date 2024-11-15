@@ -55,6 +55,19 @@ function starts($shape,$line){
     }
     }
 
+    /* 
+    建立資料庫的連線變數
+    @param string $db 資料庫名稱
+    @return object
+
+    */
+
+    /* 
+    回傳指定資料表的所有資料
+    @param string $table 資料表名稱
+    @return array
+    */
+
     function all($table){
         $dsn="mysql:host=localhost;charset=utf8;dbname=crud";
         $pdo=new PDO($dsn,'root','');
@@ -63,4 +76,40 @@ function starts($shape,$line){
         return $rows;
         
     }
+
+    /* 
+    回傳指定資料表的特定ID的單筆資料
+    @param string $table 資料表名稱
+    @param intteger $id || array $id 資料表ID
+    @return array
+    */
+
+function find($table,$id){
+    $pdo=$pdo=pdo('crud');
+
+    if(is_array($id)){
+        $tmp=[];
+        foreach($id as $key => $value){
+          /*   // string print format = sprintf("`%s`='%s'",$key,$value); */
+            $tmp[]="`$key`='$value'";
+        }
+        $sql="select * from $table where ".join(" && ",$tmp);
+
+    }else{
+
+        $sql="slesct * from $table where id='$id'";
+    }
+    $row=$pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+    return $row;
+}
+
+/* 
+列出陣列內容
+*/
+function dd($array){
+    echo "<pre>";
+    print_r($array);
+    echo "</pre>";
+}
+
 ?>
